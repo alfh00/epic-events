@@ -5,14 +5,15 @@ class AuthenticationService:
     def __init__(self):
         self.controller = AuthenticationController()
         self.presenter = AuthenticationPresenter()
-
-    def register_user(self):
         
-        registration_data = self.presenter.collect_registration_data()
-        departments = self.controller.get_departments()
-        department = self.presenter.select_department(departments)
-        self.controller.register(registration_data, department)
-
+    @staticmethod
+    def register_user():
+        
+        registration_data = AuthenticationPresenter.collect_registration_data()
+        departments = AuthenticationController.get_departments()
+        department = AuthenticationPresenter.select_department(departments)
+        AuthenticationController.register(registration_data, department)
+    
     def login_user(self):
         username, password = self.presenter.prompt_for_credentials()
         user = self.controller.login(username, password)

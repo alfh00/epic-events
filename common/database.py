@@ -90,6 +90,14 @@ class Contact(Entity):
     email = Column(String)
     phone_number = Column(String)
 
+
+    def serialize(self):
+        return {
+            'full_name': self.full_name,
+            'email': self.email,
+            'phone': self.phone_number,
+        }
+
 class Client(Entity):
     __tablename__ = "Clients"
 
@@ -157,7 +165,10 @@ class Employee(Entity):
         if not kwargs:
             return None
 
-        query = cls._session.query(cls).options(joinedload(cls.department))
+        query = cls._session.query(cls).options(
+            joinedload(cls.department),
+            joinedload(cls.contact)  
+        )
 
         for attribute, value in kwargs.items():
             if hasattr(cls, attribute):
@@ -172,7 +183,7 @@ class Employee(Entity):
         return {
             'employee_id': self.employee_id,
             'username': self.username,
-            'contact_id': self.contact_id,
+            'contact': self.contact.serialize() if self.contact else None,
             'department': self.department.serialize() if self.department else None
         }
     

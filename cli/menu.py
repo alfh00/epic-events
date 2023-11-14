@@ -1,4 +1,4 @@
-from core.employee_usecase import employee_controller
+from core.employee_usecase.employee_controller import EmployeeController
 
 import os
 
@@ -19,7 +19,6 @@ class MenuController:
         self.menu = self.generate_menu()
         self.display_menu()
 
-
     def generate_menu(self):
         if self.user['department']['name'] == 'Gestion':
             return self.generate_gestion_menu()
@@ -33,9 +32,9 @@ class MenuController:
             "Main Menu",
             submenus=[
                 Menu("Employee", submenus=[
-                    Menu("Display Employees"),
-                    Menu("Add an Employee"),
-                    Menu("Update an Employee"),
+                    Menu("Display Employees", action=EmployeeController.list_employees),
+                    Menu("Add an Employee", action=EmployeeController.add_employee),
+                    Menu("Update an Employee", action=EmployeeController.update_employee),
                     Menu("Delete an Employee"),
                     Menu("Back"),
                 ]),
@@ -107,7 +106,7 @@ class MenuController:
                             parent_menu = current_menu  # Update the parent menu
                             current_menu = selected_submenu
                         else:
-                            self.execute_action(selected_submenu.action)
+                            selected_submenu.action()
                 else:
                     print("Invalid choice. Please try again.")
             else:
@@ -115,7 +114,7 @@ class MenuController:
 
     def say_goodbye(self):
         print(f"Goodbye!")
-        # Delete the user or perform any necessary cleanup here
+        
 
 
 
