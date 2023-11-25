@@ -26,7 +26,7 @@ session = Session()
 class EntityMeta(DeclarativeMeta):
     def __new__(cls, name, bases, attrs):
         new_cls = super().__new__(cls, name, bases, attrs)
-        # Add class-level session
+        #class-level session
         new_cls._session = session
         return new_cls
 
@@ -60,14 +60,12 @@ class Entity(Base):
         return query.first()
 
 
-    @classmethod
-    def update(cls, id, **kwargs):
-        obj = cls.read(id)
-        if obj:
-            for key, value in kwargs.items():
-                setattr(obj, key, value)
-            cls._session.commit()
-        return obj
+    def update(self, **kwargs):
+        for key, value in kwargs.items():
+            if key != 'employee_id':  # Exclude updating the ID
+                setattr(self, key, value)
+        self._session.commit()
+        return self
 
     @classmethod
     def delete(cls, id):

@@ -50,13 +50,13 @@ class EmployeePresenter:
             "Department": 12,
         }
 
-        # Print headers
+        # Print headers row
         headers = ["N°", "Username", "Full Name", "Email", "Phone", "Department"]
         header_line = "|".join(f"{header.center(column_widths[header])}" for header in headers)
         print(header_line)
         print("-" * len(header_line))
 
-        # Print data
+        # Print data rows
         for idx, emp in enumerate(employees, start=1):
             data = [
                 str(idx),
@@ -78,6 +78,29 @@ class EmployeePresenter:
                     print("Invalid selection. Please enter a number within the valid range.")
             except ValueError:
                 print("Invalid input. Please enter a valid number.")
+    
+    @staticmethod
+    def select_department(departments):
+            print("Select a department:")
+            for index, department in enumerate(departments, start=1):
+                print(f"{index}. {department.department_name}")
 
+            while True:
+                try:
+                    choice = int(input("Enter the number of the department: "))
+                    if 1 <= choice <= len(departments):
+                        return departments[choice - 1]
+                    else:
+                        print("Invalid choice. Please enter a valid number.")
+                except ValueError:
+                    print("Invalid input. Please enter a valid number.")
 
-   
+    @staticmethod
+    def ask_for_employee_info_updates(emp):
+        return {
+        'new_username' : input(f'New Username ({emp["username"]}): '),
+        'new_full_name' : input(f'New Full Name ({emp["contact"]["full_name"]}): '),
+        'new_email' : input(f'New Email ({emp["contact"]["email"]}): '),
+        'new_phone' : input(f'New Phone ({emp["contact"]["phone"]}): '),
+        }
+        
