@@ -1,4 +1,7 @@
-from core.employee_usecase import employee_controller
+from core.employee_usecase.employee_controller import EmployeeController
+from core.contract_usecase.contract_controller import ContractController
+from core.client_usecase.client_controller import ClientController
+from core.event_usecase.event_controller import EventController
 
 import os
 
@@ -19,7 +22,6 @@ class MenuController:
         self.menu = self.generate_menu()
         self.display_menu()
 
-
     def generate_menu(self):
         if self.user['department']['name'] == 'Gestion':
             return self.generate_gestion_menu()
@@ -33,10 +35,32 @@ class MenuController:
             "Main Menu",
             submenus=[
                 Menu("Employee", submenus=[
-                    Menu("Display Employees"),
-                    Menu("Add an Employee"),
-                    Menu("Update an Employee"),
-                    Menu("Delete an Employee"),
+                    Menu("Display Employees", action=EmployeeController.list_employees),
+                    Menu("Add an Employee", action=EmployeeController.add_employee),
+                    Menu("Update an Employee", action=EmployeeController.update_employee),
+                    Menu("Delete an Employee", action=EmployeeController.delete_employee),
+                    Menu("Back"),
+                ]),
+                Menu("Contracts", 
+                    submenus=[
+                    Menu("Display Contracts", action=ContractController.list_contracts),
+                    Menu("Add a Contract", action=ContractController.create_contract),
+                    Menu("Update a contract"),
+                    Menu("Back"),
+                ]),
+                Menu("Clients", 
+                    submenus= [
+                    Menu("Display Clients", action=ClientController.list_clients),
+                    Menu("Add a Client", action=ClientController.create_client),
+                    Menu("Update a Client", action=ClientController.update_client),
+                    Menu("Delete a Client", action=ClientController.delete_client),
+                    Menu("Back"),
+                ]),
+                Menu("Events", [
+                    Menu("Display Events", action=None),
+                    Menu("Add an Event", action=None),
+                    Menu("Update an Event", action=None),
+                    Menu("Filter an Event", action=None),
                     Menu("Back"),
                 ]),
                 Menu("Exit"),
@@ -49,8 +73,8 @@ class MenuController:
             submenus=[
                 Menu("Contracts", 
                     submenus=[
-                    Menu("Display Contracts"),
-                    Menu("Add a Contract"),
+                    Menu("Display Contracts", action=ContractController.list_contracts),
+                    Menu("Add a Contract", action=ContractController.create_contract),
                     Menu("Update a contract"),
                     Menu("Back"),
                 ]),
@@ -107,7 +131,7 @@ class MenuController:
                             parent_menu = current_menu  # Update the parent menu
                             current_menu = selected_submenu
                         else:
-                            self.execute_action(selected_submenu.action)
+                            selected_submenu.action()
                 else:
                     print("Invalid choice. Please try again.")
             else:
@@ -115,7 +139,7 @@ class MenuController:
 
     def say_goodbye(self):
         print(f"Goodbye!")
-        # Delete the user or perform any necessary cleanup here
+        
 
 
 

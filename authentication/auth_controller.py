@@ -1,10 +1,12 @@
 import bcrypt
+from time import sleep
 
 from common.database import Employee, Contact, Department
 
 class AuthenticationController:
-  def register(self, registration_data, department):
-    departments = Department.list_all()
+  @staticmethod
+  def register(registration_data, department):
+    
     if registration_data['password'] == registration_data['confirmed_password']:
 
       password = registration_data['password']
@@ -26,6 +28,10 @@ class AuthenticationController:
             department_id=department.department_id
             
         )
+
+        if new_employee:
+          return print(new_employee.serialize(), '\nsuccessfully created')
+        sleep(30)
         
       except:
         pass
@@ -45,6 +51,6 @@ class AuthenticationController:
       else:
         print('user not found')
 
-
-  def get_departments(self):
+  @staticmethod
+  def get_departments():
     return Department.list_all()

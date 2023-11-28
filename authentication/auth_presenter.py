@@ -1,12 +1,15 @@
 import getpass
 
 class AuthenticationPresenter:
-  def prompt_for_credentials(self):
+  
+  @staticmethod
+  def prompt_for_credentials():
     username = input('Username:')
     password = getpass.getpass(prompt='Password:')
     return username, password
 
-  def collect_registration_data(self):
+  @staticmethod
+  def collect_registration_data():
       # Collect and validate user registration data
     username = input('Username: ')
     password = getpass.getpass(prompt='Password: ')
@@ -25,8 +28,8 @@ class AuthenticationPresenter:
     }
     return new_employee
 
-    # Other methods for presenting information to the user
-  def select_department(self, departments):
+  @staticmethod
+  def select_department(departments):
         print("Select a department:")
         for index, department in enumerate(departments, start=1):
             print(f"{index}. {department.department_name}")
