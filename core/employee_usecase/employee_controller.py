@@ -43,9 +43,18 @@ class EmployeeController:
       )
     selected_emp._session.commit()
 
-    print('updated...')
-    input()
+  def delete_employee():
+    employees = Employee.list_all()
+    
+    serialised_employees = []
+    for emp in employees:
+      emp = emp.serialize()
+      serialised_employees.append(emp)
 
-  def delete_employee(self):
-    pass
-   
+    emp_idx = EmployeePresenter.select_employee(serialised_employees)
+    selected_emp = employees[emp_idx]
+    result = selected_emp.delete()
+    if result:
+      print('the emp has been deleted')
+    else:
+      print('something went wrong')

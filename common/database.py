@@ -1,7 +1,7 @@
 import os
 from dotenv import load_dotenv
 
-from sqlalchemy import create_engine, Column, Integer, String, DateTime, Boolean, ForeignKey
+from sqlalchemy import create_engine, Column, Integer, String, DateTime, Boolean, func, ForeignKey
 from sqlalchemy.orm import sessionmaker, relationship, joinedload
 from sqlalchemy.ext.declarative import declarative_base, DeclarativeMeta
 
@@ -67,12 +67,14 @@ class Entity(Base):
         self._session.commit()
         return self
 
-    @classmethod
-    def delete(cls, id):
-        obj = cls.read(id)
-        if obj:
-            cls._session.delete(obj)
-            cls._session.commit()
+    
+    def delete(self):
+            try:
+                self._session.delete(self)
+                self._session.commit()
+                return True
+            except Exception:
+                return False
     
     @classmethod
     def list_all(cls):
@@ -100,11 +102,21 @@ class Client(Entity):
     __tablename__ = "Clients"
 
     client_id = Column(Integer, primary_key=True)
-    client_contact_id = Column(Integer, ForeignKey("Contacts.contact_id"))
+    client_contact_id = Column(Integer, ForeignKey("Contacts.contact_id", ondelete="CASCADE"))
     commercial_employee_id = Column(Integer)
     company_name = Column(String)
-    created_at = Column(DateTime)
-    updated_at = Column(DateTime)
+    created_at = Column(DateTime, server_default=func.now())
+    updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now())
+
+    def serialize(self):
+        return {
+            'client_contact': Contact.read(contact_id=self.client_contact_id).serialize(),
+            'commercial_employee': Employee.read(employee_id=self.commercial_employee_id).serialize(),
+            'company_name': self.company_name,
+            'created_at': self.created_at.isoformat(),  # Format datetime as string
+            'updated_at': self.updated_at.isoformat()  # Format datetime as string
+        }
+
 
 class Event(Entity):
     __tablename__ = "Events"
@@ -125,12 +137,11 @@ class Contract(Entity):
 
     contract_id = Column(Integer, primary_key=True)
     client_id = Column(Integer, ForeignKey("Clients.client_id"))
-    commercial_employee_id = Column(Integer)
     total_amount = Column(Integer)
     paid_amount = Column(Integer)
-    created_at = Column(DateTime)
     is_signed = Column(Boolean)
-    updated_at = Column(DateTime)
+    created_at = Column(DateTime, server_default=func.now())
+    updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now())
 
 
 class Department(Entity):
@@ -185,6 +196,19 @@ class Employee(Entity):
             'department': self.department.serialize() if self.department else None
         }
     
+    @classmethod
+    def filter_by_department(cls, department_name):
+        if not department_name:
+            return []
+
+        query = cls._session.query(cls).options(
+            joinedload(cls.department),
+            joinedload(cls.contact)
+        )
+
+        query = query.join(Department).filter(Department.department_name == department_name)
+
+        return query.all()
 
 # Create the database structure
 Base.metadata.create_all(engine)
