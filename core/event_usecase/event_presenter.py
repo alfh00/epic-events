@@ -84,7 +84,7 @@ class EventPresenter:
     @staticmethod
     def select_event(events):
         if not events:
-            return input("No Events to display. press any key to be back")
+            return None
          
         column_widths = {
             "N°":3,

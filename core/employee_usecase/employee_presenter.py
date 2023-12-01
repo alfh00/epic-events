@@ -103,4 +103,6 @@ class EmployeePresenter:
         'new_email' : input(f'New Email ({emp["contact"]["email"]}): '),
         'new_phone' : input(f'New Phone ({emp["contact"]["phone"]}): '),
         }
-        
+    
+    def confirm(message):
+       input(message + '\nPress Enter to continue...')

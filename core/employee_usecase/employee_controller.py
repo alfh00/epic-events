@@ -15,7 +15,9 @@ class EmployeeController:
     
 
   def add_employee():
-    return AuthenticationService.register_user()
+    AuthenticationService.register_user()
+    return EmployeePresenter.confirm('New employee successfully registred...')
+  
   
   def update_employee():
     employees = Employee.list_all()
@@ -34,14 +36,19 @@ class EmployeeController:
 
     new_department = EmployeePresenter.select_department(all_departments)
 
-    selected_emp.update(username=updated_infos['new_username'])
-    selected_emp.department = new_department
-    selected_emp.contact.update(
-      full_name=updated_infos['new_full_name'],
-      email=updated_infos['new_email'],
-      phone_number=updated_infos['new_phone'],
-      )
-    selected_emp._session.commit()
+    try:
+
+      selected_emp.update(username=updated_infos['new_username'])
+      selected_emp.department = new_department
+      selected_emp.contact.update(
+        full_name=updated_infos['new_full_name'],
+        email=updated_infos['new_email'],
+        phone_number=updated_infos['new_phone'],
+        )
+      selected_emp._session.commit()
+      EmployeePresenter.confirm('Successfully updated...')
+    except Exception:
+      EmployeePresenter.confirm('Something Went wrong while updating...')
 
   def delete_employee():
     employees = Employee.list_all()
@@ -52,9 +59,10 @@ class EmployeeController:
       serialised_employees.append(emp)
 
     emp_idx = EmployeePresenter.select_employee(serialised_employees)
+    if not emp_idx: return
     selected_emp = employees[emp_idx]
     result = selected_emp.delete()
     if result:
-      print('the emp has been deleted')
+      EmployeePresenter.confirm('the emp has been deleted')
     else:
-      print('something went wrong')
+      EmployeePresenter.confirm('something went wrong')

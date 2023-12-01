@@ -104,9 +104,12 @@ class EventController:
     events = Event.filter_by_keyword(support_employee_id=auth_user['employee_id'])
     serialized_events = [e.serialize() for e in events]
     event_idx = EventPresenter.select_event(serialized_events)
+    if not event_idx:
+      return EmployeePresenter.confirm("No Events to display. press any key to be back")
     selected_event = events[event_idx]
     event_infos = EventPresenter.ask_event_inputs()
     updated = selected_event.update(**event_infos)
+
     if updated:
       EventPresenter.confirm('Successfully updated.')
     
