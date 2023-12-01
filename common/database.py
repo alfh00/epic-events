@@ -66,6 +66,19 @@ class Entity(Base):
                 setattr(self, key, value)
         self._session.commit()
         return self
+    
+    @classmethod
+    def filter_by_keyword(cls, **kwargs):
+        query = cls._session.query(cls)
+
+        for attribute, value in kwargs.items():
+            if hasattr(cls, attribute):
+                filter_expr = getattr(cls, attribute) == value
+                query = query.filter(filter_expr)
+            else:
+                raise AttributeError(f"{cls.__name__} has no attribute '{attribute}'")
+
+        return query.all()
 
     
     def delete(self):
@@ -103,7 +116,7 @@ class Client(Entity):
 
     client_id = Column(Integer, primary_key=True)
     client_contact_id = Column(Integer, ForeignKey("Contacts.contact_id", ondelete="CASCADE"))
-    commercial_employee_id = Column(Integer)
+    commercial_employee_id = Column(Integer, ForeignKey("Employees.employee_id"))
     company_name = Column(String)
     created_at = Column(DateTime, server_default=func.now())
     updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now())
@@ -113,8 +126,8 @@ class Client(Entity):
             'client_contact': Contact.read(contact_id=self.client_contact_id).serialize(),
             'commercial_employee': Employee.read(employee_id=self.commercial_employee_id).serialize(),
             'company_name': self.company_name,
-            'created_at': self.created_at.isoformat(),  # Format datetime as string
-            'updated_at': self.updated_at.isoformat()  # Format datetime as string
+            'created_at': self.created_at.strftime('%d-%m-%y %H:%M'), 
+            'updated_at': self.updated_at.strftime('%d-%m-%y %H:%M')
         }
 
 
@@ -122,26 +135,51 @@ class Event(Entity):
     __tablename__ = "Events"
 
     event_id = Column(Integer, primary_key=True)
-    client_id = Column(Integer, ForeignKey("Clients.client_id"))
     contract_id = Column(Integer)
-    event_contact_id = Column(Integer, ForeignKey("Contacts.contact_id"))
-    support_employee_id = Column(Integer)
+    support_employee_id = Column(Integer, ForeignKey("Employees.employee_id"))
     start_date = Column(DateTime)
     end_date = Column(DateTime)
     location = Column(String)
     attendees = Column(Integer)
     note = Column(String)
 
+    def serialize(self):
+
+        return {
+            'event_id': self.event_id,
+            'contract': Contract.read(contract_id=self.contract_id).serialize(),
+            'support_employee': Employee.read(employee_id=self.support_employee_id).serialize(),
+            'start_date': self.start_date.strftime('%d-%m-%y %H:%M') if self.start_date else None,
+            'end_date': self.end_date.strftime('%d-%m-%y %H:%M') if self.end_date else None,
+            'location': self.location,
+            'attendees': self.attendees,
+            'note': self.note,
+        }
+
+
 class Contract(Entity):
     __tablename__ = "Contracts"
 
     contract_id = Column(Integer, primary_key=True)
     client_id = Column(Integer, ForeignKey("Clients.client_id"))
+    commercial_employee_id = Column(Integer, ForeignKey("Employees.employee_id"))
     total_amount = Column(Integer)
     paid_amount = Column(Integer)
     is_signed = Column(Boolean)
     created_at = Column(DateTime, server_default=func.now())
     updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now())
+
+    def serialize(self):
+        return {
+        'contract_id': self.contract_id,
+        'client': Client.read(client_id=self.client_id).serialize(),
+        'total_amount': str(self.total_amount),
+        'paid_amount': str(self.paid_amount),
+        'is_signed': str(self.is_signed),
+        'created_at': self.created_at.strftime('%d-%m-%y %H:%M'),
+        'updated_at': self.updated_at.strftime('%d-%m-%y %H:%M'),
+    }
+
 
 
 class Department(Entity):

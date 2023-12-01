@@ -1,20 +1,9 @@
-from core.employee_usecase.employee_controller import EmployeeController
-from core.contract_usecase.contract_controller import ContractController
-from core.client_usecase.client_controller import ClientController
-from core.event_usecase.event_controller import EventController
+from .menu_models import commercial_menu, gestion_menu, support_menu
 
 import os
 
 def clear_console():
     os.system('cls' if os.name == 'nt' else 'clear')
-
-
-
-class Menu:
-  def __init__(self, name, action=None, submenus=None):
-        self.name = name
-        self.action = action
-        self.submenus = submenus if submenus else []
         
 class MenuController:
     def __init__(self, user):
@@ -31,77 +20,13 @@ class MenuController:
             return self.generate_support_menu()
 
     def generate_gestion_menu(self):
-        return Menu(
-            "Main Menu",
-            submenus=[
-                Menu("Employee", submenus=[
-                    Menu("Display Employees", action=EmployeeController.list_employees),
-                    Menu("Add an Employee", action=EmployeeController.add_employee),
-                    Menu("Update an Employee", action=EmployeeController.update_employee),
-                    Menu("Delete an Employee", action=EmployeeController.delete_employee),
-                    Menu("Back"),
-                ]),
-                Menu("Contracts", 
-                    submenus=[
-                    Menu("Display Contracts", action=ContractController.list_contracts),
-                    Menu("Add a Contract", action=ContractController.create_contract),
-                    Menu("Update a contract"),
-                    Menu("Back"),
-                ]),
-                Menu("Clients", 
-                    submenus= [
-                    Menu("Display Clients", action=ClientController.list_clients),
-                    Menu("Add a Client", action=ClientController.create_client),
-                    Menu("Update a Client", action=ClientController.update_client),
-                    Menu("Delete a Client", action=ClientController.delete_client),
-                    Menu("Back"),
-                ]),
-                Menu("Events", [
-                    Menu("Display Events", action=None),
-                    Menu("Add an Event", action=None),
-                    Menu("Update an Event", action=None),
-                    Menu("Filter an Event", action=None),
-                    Menu("Back"),
-                ]),
-                Menu("Exit"),
-            ],
-        )
+        return gestion_menu
 
     def generate_commercial_menu(self):
-        return Menu(
-            "Main Menu",
-            submenus=[
-                Menu("Contracts", 
-                    submenus=[
-                    Menu("Display Contracts", action=ContractController.list_contracts),
-                    Menu("Add a Contract", action=ContractController.create_contract),
-                    Menu("Update a contract"),
-                    Menu("Back"),
-                ]),
-                Menu("Exit"),
-            ],
-        )
+        return commercial_menu
 
     def generate_support_menu(self):
-        return Menu(
-            "Main Menu",
-            submenus=[
-                Menu("Clients", [
-                    Menu("Display Clients", action=None),
-                    Menu("Add a Client", action=None),
-                    Menu("Update a Client", action=None),
-                    Menu("Back"),
-                ]),
-                Menu("Events", [
-                    Menu("Display Events", action=None),
-                    Menu("Add an Event", action=None),
-                    Menu("Update an Event", action=None),
-                    Menu("Filter an Event", action=None),
-                    Menu("Back"),
-                ]),
-                Menu("Exit"),
-            ],
-        )
+        return support_menu
 
     def display_menu(self, current_menu=None):
         parent_menu = None

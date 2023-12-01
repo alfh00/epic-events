@@ -1,4 +1,5 @@
 from authentication.auth_service import AuthenticationService
+from authentication.user_context import UserContext
 
 from cli.menu import MenuController
 
@@ -24,7 +25,7 @@ def clear_console():
 auth_service = AuthenticationService()
 
 def main():
-    print("Welcome to Your Terminal Authentication App")
+    print("Welcome to Your Epic-event CRM")
 
     while True:
         
@@ -39,6 +40,8 @@ def main():
             user = auth_service.login_user()
             if user:
                 print(user)
+                user_context = UserContext()
+                user_context.set_current_user(user)
                 return MenuController(user)
             else:
                 print('no user try again')
