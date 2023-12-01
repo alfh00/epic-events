@@ -169,6 +169,14 @@ class Contract(Entity):
     created_at = Column(DateTime, server_default=func.now())
     updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now())
 
+    @classmethod
+    def get_all_unpaid_contracts(cls):
+        return cls._session.query(cls).filter(cls.paid_amount < cls.total_amount).all()
+    
+    @classmethod
+    def get_all_unsigned_contracts(cls):
+        return cls._session.query(cls).filter(cls.is_signed.is_(False)).all()
+
     def serialize(self):
         return {
         'contract_id': self.contract_id,

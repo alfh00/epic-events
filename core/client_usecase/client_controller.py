@@ -1,6 +1,8 @@
 from common.database import Client, Contact
 from .client_presenter import ClientPresenter
 
+from authentication.user_context import UserContext
+
 from datetime import datetime
 
 class ClientController:
@@ -15,6 +17,7 @@ class ClientController:
   def create_client():
     new_client_infos = ClientPresenter.ask_for_client_infos()
     client_contact = new_client_infos['client_contact']
+       
 
     client_contact = Contact.create(**client_contact)
     client = Client.create(
@@ -25,14 +28,35 @@ class ClientController:
       updated_at=datetime.now(),
     )
 
-  def update_client():
-    all_clients = Client.list_all()
-    serialized_clients = []
+  def create_client_com():
+    user_context = UserContext()
+    auth_user = user_context.get_current_user()
 
-    for client in all_clients:
-        serialized_clients.append(client.serialize())
-    
+    new_client_infos = ClientPresenter.ask_for_client_infos_com()
+    client_contact = new_client_infos['client_contact']
+       
+
+    client_contact = Contact.create(**client_contact)
+    client = Client.create(
+      client_contact_id=client_contact.contact_id,
+      company_name=new_client_infos['client_company_name'],
+      commercial_employee_id=auth_user['employee_id'],
+      created_at=datetime.now(),
+      updated_at=datetime.now(),
+    )
+
+  def update_client():
+    user_context = UserContext()
+    auth_user = user_context.get_current_user()
+
+    if auth_user['department']['name'] == 'Commercial':
+      all_clients = Client.filter_by_keyword(commercial_employee_id=auth_user['employee_id'])
+    else:
+      all_clients = Client.list_all()
+
+    serialized_clients = [c.serialize() for c in all_clients]
     client_idx = ClientPresenter.select_client(serialized_clients)
+
     if client_idx is None: return
 
     selected_client = all_clients[client_idx]

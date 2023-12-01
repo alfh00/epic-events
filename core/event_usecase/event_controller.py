@@ -78,17 +78,16 @@ class EventController:
     support_employees = Employee.filter_by_department(department_name='Support')
     serialized_support_employee = [emp.serialize() for emp in support_employees]
     employee_idx = EmployeePresenter.select_employee(serialized_support_employee)
-    input(employee_idx)
+    
     selected_employee = serialized_support_employee[employee_idx]
-    input(selected_employee)
-
+    
     updated = selected_event.update(support_employee_id=selected_employee['employee_id'])
 
     if updated:
-      EventPresenter.confirm('Successfully updated.')
+      return EventPresenter.confirm('Successfully updated.')
     
     else:
-      EventPresenter.confirm('Something went Wrong...')
+      return EventPresenter.confirm('Something went Wrong...')
 
   def list_my_events():
     user_context = UserContext()

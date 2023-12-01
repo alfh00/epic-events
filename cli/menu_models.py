@@ -11,12 +11,21 @@ class Menu:
 
 gestion_menu = Menu(
             "Main Menu",
+            
             submenus=[
                 Menu("Employee", submenus=[
                     Menu("Display Employees", action=EmployeeController.list_employees),
                     Menu("Add an Employee", action=EmployeeController.add_employee),
                     Menu("Update an Employee", action=EmployeeController.update_employee),
                     Menu("Delete an Employee", action=EmployeeController.delete_employee),
+                    Menu("Back"),
+                ]),
+                Menu("Clients", 
+                    submenus=[
+                    Menu("Display Clients", action=ClientController.list_clients),
+                    Menu("Add a Client", action=ClientController.create_client),
+                    Menu("Update a Client", action=ClientController.update_client),
+                    Menu("Delete a Client", action=ClientController.delete_client),
                     Menu("Back"),
                 ]),
                 Menu("Contracts", 
@@ -45,9 +54,9 @@ commercial_menu = Menu(
                 Menu("Clients", 
                     submenus=[
                     Menu("Display Clients", action=ClientController.list_clients),
-                    Menu("Add a Client", action=ClientController.create_client),
+                    Menu("Add a Client", action=ClientController.create_client_com),
                     Menu("Update a Client", action=ClientController.update_client),
-                    Menu("Delete a Client", action=ClientController.delete_client),
+                    
                     Menu("Back"),
                 ]),
                 Menu("Contracts", 
@@ -55,15 +64,15 @@ commercial_menu = Menu(
                     Menu("Display Contracts", action=ContractController.list_contracts),
                     Menu("Add a Contract", action=ContractController.create_contract),
                     Menu("Update a contract", action=ContractController.update_contract),
-                    Menu("Delete a contract", action=ContractController.delete_contract),
+                    Menu("Filter a contract", action=ContractController.filter_contract),
+                    
                     Menu("Back"),
                 ]),
                 Menu("Events", 
                      submenus=[
                     Menu("Display Events", action=EventController.list_events),
                     Menu("Add an Event", action=EventController.create_event),
-                    Menu("Update an Event", action=EventController.update_event),
-                    
+                    Menu("Assign Support", action=EventController.assign_support),
                     Menu("Back"),
                 ]),
                 Menu("Exit"),

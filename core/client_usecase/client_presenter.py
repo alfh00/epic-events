@@ -53,6 +53,20 @@ class ClientPresenter:
       'commercial_empl': selected_emp,
     }
   
+  def ask_for_client_infos_com():
+    client_contact = {
+      'full_name' : input('Client Full Name: ' ),
+      'email' : input('Client Email: ' ),
+      'phone_number' : input('Client Phone Number: ' )
+    }
+
+    client_company_name = input('Company Name: ')
+
+    return {
+      'client_contact' : client_contact,
+      'client_company_name' : client_company_name,
+    }
+  
   def select_com_employee():
     comm_empl = Employee.filter_by_department('Commercial')
     serialised_employees = []

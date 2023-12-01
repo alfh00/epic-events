@@ -55,6 +55,15 @@ class ContractController:
         except Exception:
             ContractPresenter.confirm('Something went wrong when updating.')
 
+    def filter_contract():
+        choice = ContractPresenter.ask_what_to_filter()
+        if choice == '1':
+            contracts = Contract.get_all_unpaid_contracts()
+        elif choice == '2':
+            contracts = Contract.get_all_unsigned_contracts()
+
+        return ContractPresenter.display_contracts([c.serialize() for c in contracts])
+    
 
     def delete_contract():
         contracts = Contract.list_all()

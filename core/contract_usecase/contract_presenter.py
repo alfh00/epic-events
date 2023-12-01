@@ -93,5 +93,16 @@ class ContractPresenter:
             except ValueError:
                 print("Invalid input. Please enter a valid number.")
 
+    def ask_what_to_filter():
+        while True:
+            print('1. Filter Unpaid Contract')
+            print('2. Filter Unsigned Contract')
+            choice = input('Select a Filtreing Option:  ')
+            if choice in ['1','2']:
+                return choice
+            else:
+                input('Invalid Choice, press any key to try again...')
+
+
     def confirm(message):
         input(message + '\nPress Enter to continue...')
