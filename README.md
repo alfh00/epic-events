@@ -1,6 +1,7 @@
 # Epic Events CRM
 
 ## Table of Contents
+
 - [Introduction](#introduction)
 - [Features](#features)
   - [General Requirements](#general-requirements)
@@ -62,16 +63,46 @@ Epic Events is an event management company that specializes in organizing variou
 
 1. Clone the repository: `git clone https://github.com/your-username/epic-events-crm.git`
 2. Install dependencies: `pip install -r requirements.txt`
+3. Database Setup:
+   You should have PostgreSQL installed
+
+Before running the application, you need to set up the database. We use SQLAlchemy and Alembic for database migrations.
+
+Alembic Migration
+To create and apply database migrations, run the following commands:
+
+    bash```
+    alembic init alembic
+    alembic revision --autogenerate -m "Initial migration"
+    alembic upgrade head
+    This sets up Alembic and applies the initial migration to create the necessary database tables.
+    ```
 
 ## Usage
 
 1. Run the application: `python main.py`
 2. Follow the on-screen instructions to navigate through the application.
+3. A Menu shoul apprear on the Terminal, use the arrow to navigate.
 
-## Contributing
+### SQLAlchemy
 
-Feel free to contribute to the project by opening issues or submitting pull requests.
+We leverage SQLAlchemy as the ORM (Object-Relational Mapping) tool for interacting with our database. This allows us to work with the database using Python objects.
 
-## License
+### Alembic
 
-This project is licensed under the [MIT License](LICENSE).
+Alembic is used for database migrations. It helps manage changes to the database schema over time, making it easy to evolve the database along with the application.
+
+### pytest
+
+Our test suite is built using pytest. It ensures the reliability and correctness of our codebase through automated tests.
+To run test:
+
+    bash```
+    pytest -s
+    ```
+
+dont forget the flag -s because we use 'capsys' for capturation printed data on the Terminal.
+
+#### Other Dependencies
+
+Other dependencies can be found in the requirements.txt file. We use these libraries to enhance various aspects of the application, from handling forms to managing user authentication like 'bcrypt' for password hashing.
