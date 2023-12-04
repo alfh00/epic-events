@@ -27,6 +27,7 @@ class ClientController:
       created_at=datetime.now(),
       updated_at=datetime.now(),
     )
+    return client
 
   def create_client_com():
     user_context = UserContext()

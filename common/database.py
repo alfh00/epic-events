@@ -1,23 +1,34 @@
 import os
-from dotenv import load_dotenv
+from dotenv import load_dotenv 
 
 from sqlalchemy import create_engine, Column, Integer, String, DateTime, Boolean, func, ForeignKey
 from sqlalchemy.orm import sessionmaker, relationship, joinedload
-from sqlalchemy.ext.declarative import declarative_base, DeclarativeMeta
+from sqlalchemy.orm import declarative_base, DeclarativeMeta
 
 load_dotenv()  # Load environment variables from .env file
 
-db_host = os.getenv("DB_HOST")
-db_port = os.getenv("DB_PORT")
-db_username = os.getenv("DB_USERNAME")
-db_password = os.getenv("DB_PASSWORD")
-db_name = os.getenv("DB_NAME")
+testing = os.getenv("TESTING") == '1'
+
+if testing:
+    db_host = os.getenv("TEST_DB_HOST")
+    db_port = os.getenv("TEST_DB_PORT")
+    db_username = os.getenv("TEST_DB_USERNAME")
+    db_password = os.getenv("TEST_DB_PASSWORD")
+    db_name = os.getenv("TEST_DB_NAME")
+else:
+    db_host = os.getenv("DB_HOST")
+    db_port = os.getenv("DB_PORT")
+    db_username = os.getenv("DB_USERNAME")
+    db_password = os.getenv("DB_PASSWORD")
+    db_name = os.getenv("DB_NAME")
+
+input(f'Test status:______{testing}')
 
 # Create a SQLAlchemy engine
 engine = create_engine(f"postgresql://{db_username}:{db_password}@{db_host}:{db_port}/{db_name}")
-
 # Create a session
 Session = sessionmaker(bind=engine)
+    
 session = Session()
 
 

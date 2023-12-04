@@ -30,14 +30,13 @@ class AuthenticationController:
         )
 
         if new_employee:
-          return print(new_employee.serialize(), '\nsuccessfully created')
-        sleep(30)
+          return True
         
       except:
-        pass
+        return False
     
 
-  def login(self, username, password):
+  def login(username, password):
 
     if username and password:
       user = Employee.read(username=username)

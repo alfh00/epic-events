@@ -15,18 +15,18 @@ class EmployeeController:
     
 
   def add_employee():
-    AuthenticationService.register_user()
-    return EmployeePresenter.confirm('New employee successfully registred...')
+    registred = AuthenticationService.register_user()
+    if registred:
+      return EmployeePresenter.confirm('New employee successfully registred...')
+    else:
+      return EmployeePresenter.confirm('Something went wrong while registring...')
   
   
   def update_employee():
     employees = Employee.list_all()
 
-    serialised_employees = []
-    for emp in employees:
-      emp = emp.serialize()
-      serialised_employees.append(emp)
-
+    serialised_employees = [e.serialize() for e in employees]
+   
     emp_idx = EmployeePresenter.select_employee(serialised_employees)
     selected_emp = employees[emp_idx]
 
@@ -47,16 +47,13 @@ class EmployeeController:
         )
       selected_emp._session.commit()
       EmployeePresenter.confirm('Successfully updated...')
-    except Exception:
-      EmployeePresenter.confirm('Something Went wrong while updating...')
+    except Exception as e:
+      EmployeePresenter.confirm(f'Something Went wrong while updating...\n{e}')
 
   def delete_employee():
     employees = Employee.list_all()
     
-    serialised_employees = []
-    for emp in employees:
-      emp = emp.serialize()
-      serialised_employees.append(emp)
+    serialised_employees = [e.serialize() for e in employees]
 
     emp_idx = EmployeePresenter.select_employee(serialised_employees)
     if not emp_idx: return

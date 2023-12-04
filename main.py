@@ -39,7 +39,7 @@ def main():
             clear_console()
             user = auth_service.login_user()
             if user:
-                print(user)
+                # print(user)
                 user_context = UserContext()
                 user_context.set_current_user(user)
                 return MenuController(user)
