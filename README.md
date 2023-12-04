@@ -103,6 +103,9 @@ To run test:
 
 dont forget the flag -s because we use 'capsys' for capturation printed data on the Terminal.
 
+![coverage test](https://github.com/alfh00/epic-events/blob/main/db_schema/coverage.PNG?raw=true)
+
+
 #### Other Dependencies
 
 Other dependencies can be found in the requirements.txt file. We use these libraries to enhance various aspects of the application, from handling forms to managing user authentication like 'bcrypt' for password hashing.
